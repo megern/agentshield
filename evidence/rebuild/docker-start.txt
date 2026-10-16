@@ -1,0 +1,6 @@
+ Container venture-lab-agentshield-1  Recreate
+ Container venture-lab-agentshield-1  Recreated
+ Container venture-lab-agentshield-1  Starting
+ Container venture-lab-agentshield-1  Started
+ Container venture-lab-agentshield-1  Waiting
+ Container venture-lab-agentshield-1  Healthy
