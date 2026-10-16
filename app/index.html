@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>AgentShield</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+  </head>
+  <body>
+    <header>
+      <small>Security configuration review · v0.2.0</small>
+      <h1>AgentShield</h1>
+      <p>
+        Review agent permissions and untrusted instructions before enabling
+        tools.
+      </p>
+      <a href="/guide">User guide</a> · <a href="/docs">API reference</a>
+    </header>
+    <main>
+      <div id="status" class="status" role="status" aria-live="polite">
+        Ready. Sample buttons load synthetic data; nothing runs automatically.
+      </div>
+      <div class="layout">
+        <section class="panel">
+          <h2>Agent setup</h2>
+          <p class="hint">
+            Describe actual safeguards. This scanner does not execute tools or
+            enforce these settings.
+          </p>
+          <label
+            >Untrusted prompt or instruction text<textarea
+              id="prompt"
+              placeholder="Paste text you want to inspect"
+            ></textarea>
+          </label>
+          <fieldset>
+            <legend>Available tools</legend>
+            <label class="check"
+              ><input class="tool" type="checkbox" value="shell" />shell</label
+            ><label class="check"
+              ><input
+                class="tool"
+                type="checkbox"
+                value="filesystem_write"
+              />filesystem_write</label
+            ><label class="check"
+              ><input
+                class="tool"
+                type="checkbox"
+                value="browser"
+              />browser</label
+            ><label class="check"
+              ><input class="tool" type="checkbox" value="http" />http</label
+            ><label class="check"
+              ><input class="tool" type="checkbox" value="email" />email</label
+            ><label class="check"
+              ><input
+                class="tool"
+                type="checkbox"
+                value="payment"
+              />payment</label
+            >
+          </fieldset>
+          <label
+            >Other tools
+            <small
+              >Comma-separated names. Unrecognized names are kept but have no
+              specific risk rule.</small
+            ><input id="other-tools" /></label
+          ><label
+            >Allowed network domains
+            <small
+              >One domain per line; an entry is evidence of an allowlist, not
+              verification that one is enforced.</small
+            ><textarea id="domains" placeholder="example.org"></textarea></label
+          ><label class="check"
+            ><input type="checkbox" id="confirmation" checked />Require
+            confirmation for actions</label
+          ><label class="check"
+            ><input type="checkbox" id="sandbox" checked />Shell runs in a
+            sandbox</label
+          ><label class="check"
+            ><input type="checkbox" id="secrets" />Secrets appear in model
+            context</label
+          >
+          <div class="actions">
+            <button class="primary" id="run">Scan configuration</button
+            ><button id="sample">Load synthetic risky agent</button>
+          </div>
+        </section>
+        <section class="panel">
+          <h2>Review findings</h2>
+          <div id="results" class="empty">
+            Configure the agent, then run the scan.
+          </div>
+        </section>
+        <section class="panel wide">
+          <h2>Import and export</h2>
+          <label
+            >Import AgentShield configuration JSON<input
+              type="file"
+              id="import"
+              accept=".json,application/json"
+          /></label>
+          <div class="actions">
+            <button id="export-input">Export current configuration</button
+            ><button id="export-report">Export scan report</button>
+          </div>
+          <details>
+            <summary>Current configuration preview</summary>
+            <pre id="preview"></pre>
+          </details>
+          <p class="hint">
+            Reports include matched prompt snippets. Review them before sharing;
+            the scanner does not redact secrets.
+          </p>
+        </section>
+      </div>
+      <footer>
+        CPU-first · no external assets · inputs are sent to this app server when
+        analyzed · no automatic persistence. Treat reports as exploratory
+        evidence.
+      </footer>
+    </main>
+    <script type="module" src="/assets/ui.mjs"></script>
+  </body>
+</html>
