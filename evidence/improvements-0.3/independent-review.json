@@ -1,0 +1,193 @@
+{
+  "application": "agentshield",
+  "version": "0.3.0",
+  "reviewed_at_utc": "2026-10-17T02:36:40.149862+00:00",
+  "reviewer": "Independent AI scientific/security/QA reviewer build_science, different from this application author; no human audit claimed",
+  "production_modified_by_reviewer": false,
+  "status": "ACCEPT_LOCAL_SCOPE",
+  "confidence": "moderate for bounded documented local research scope",
+  "issues": [],
+  "scientific_assessment": "Code-level compare behavior verified with independent capped-score, changed-evidence and self-reported configuration cases. Introduced/resolved match rule codes; persistent findings retain both evidence values. Zero capped delta does not conceal the rule-level change arrays. Tool/domain controls remain unverified self-reports, explicitly described as heuristics, not enforcement or safety certification.",
+  "residual_limits": [
+    "Eight deterministic rules cover only selected English patterns and tool names; unknown tools, paraphrases, multilingual attacks and actual enforcement are not verified.",
+    "UI source uses inert textContent and revision guards; independent interactive browser inspection is assigned to root."
+  ],
+  "checks": [
+    {
+      "name": "independent-pytest-final",
+      "exit_code": 0,
+      "evidence": "evidence/improvements-0.3/independent-pytest-final.txt"
+    },
+    {
+      "name": "independent-frontend-final",
+      "exit_code": 0,
+      "evidence": "evidence/improvements-0.3/independent-frontend-final.txt"
+    },
+    {
+      "name": "independent-bandit-final",
+      "exit_code": 0,
+      "evidence": "evidence/improvements-0.3/independent-bandit-final.txt"
+    }
+  ],
+  "source_hashes_sha256": [
+    {
+      "sha256": "e74496d32026daa50450156b4630fe9966d2580a07455399763a9ae450a5b864",
+      "path": ".github/workflows/ci.yml"
+    },
+    {
+      "sha256": "11e7bdd058b64cd74b6fe90a9687e6a9e4a5644139e2c5bdc4d27e7e1051b944",
+      "path": "Dockerfile"
+    },
+    {
+      "sha256": "3f39e16bfa56aefc14b3d4083171c746e15a28b1bbbadbbf14d6f71b7c522e37",
+      "path": "README.md"
+    },
+    {
+      "sha256": "43147456e463aaf0686db039864c3686eabddd6e1c8110801f7a7756e03b2b3e",
+      "path": "app/USER_GUIDE.md"
+    },
+    {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "app/__init__.py"
+    },
+    {
+      "sha256": "d86b12ca6e519bdf27e5c94623ab29fe9a3ada4f69e0a326a0d55b0e16fb43a3",
+      "path": "app/core.py"
+    },
+    {
+      "sha256": "d1eda2150e58503114c6cf4ba36d5958aa7e2cfbb496fc0d8026b5c9da4beb77",
+      "path": "app/guard.py"
+    },
+    {
+      "sha256": "f2712d8bb0736041067b662cb7f6d0928d9b065ffd0d82e0650fa74c3a4c67a9",
+      "path": "app/index.html"
+    },
+    {
+      "sha256": "33c3b200256b11fa1086097e8dc413f613ef2b206413357c2fbe01fe55f09e44",
+      "path": "app/main.py"
+    },
+    {
+      "sha256": "6410a7d942d231f320cf67bad5b575793d40db2c025d66d01a6eb4f5effef3a9",
+      "path": "app/static/common.mjs"
+    },
+    {
+      "sha256": "31edaeb85459bc32652a37b11a7f5c5f716f16915fde7fe607f1ac9e3b7367c3",
+      "path": "app/static/style.css"
+    },
+    {
+      "sha256": "e964a0175c44a000a13d22c6f1af727a19f4537acd50aa70249678c7836fdfd7",
+      "path": "app/static/ui.mjs"
+    },
+    {
+      "sha256": "908db17023fde21d48829b52e9540899cfda4e230c935a744cda2899f400e0a4",
+      "path": "compose.yaml"
+    },
+    {
+      "sha256": "43147456e463aaf0686db039864c3686eabddd6e1c8110801f7a7756e03b2b3e",
+      "path": "docs/USER_GUIDE.md"
+    },
+    {
+      "sha256": "1d2be37c6b8d2c7a6b714ceff20008e7c459d91dfe5f1f5463e4bbdd608ff730",
+      "path": "pyproject.toml"
+    },
+    {
+      "sha256": "4e030cebd3834809ad8e01e16633198a5d1b9c89f2ce583241751a8327285f55",
+      "path": "requirements-dev.lock"
+    },
+    {
+      "sha256": "cc2d915f3530f2b16ab605d633b94e6c8784ee70f799daf639dd30deef2361de",
+      "path": "requirements-dev.txt"
+    },
+    {
+      "sha256": "da44951925ae485ff2ba743af929b11e7b0bac5b631084de18e1324b723d6f4d",
+      "path": "requirements.lock"
+    },
+    {
+      "sha256": "bd62df965af87f46d7903a4c86d2e43d7622bbcb6145a04466e29dc6c0e0c22b",
+      "path": "requirements.txt"
+    },
+    {
+      "sha256": "f5fd60a4f603918863fa034a531bd7e4dcf8aaa165e1fe8390e273ce96d61509",
+      "path": "tests/test_api.py"
+    },
+    {
+      "sha256": "de91ed4abe426e41c8a0615db77978f0b8e6ebe0eb916112a7ab9c4fc5179399",
+      "path": "tests/test_core.py"
+    },
+    {
+      "sha256": "36cb1928903b01e4cd36bbf33e8166a34bde9b1ec1996830295caef23f9916a2",
+      "path": "tests/test_guard_review.py"
+    },
+    {
+      "sha256": "8a91b36738dc040275895ff83d3d25836a528119c8892628f69b1a42559c1cd6",
+      "path": "tests/test_improvements_03.py"
+    },
+    {
+      "sha256": "c8a78dfad110356b935d99469c8555a733ea2907f78c7011ddd18a5710cf8bd1",
+      "path": "tests/test_independent03.py"
+    },
+    {
+      "sha256": "29acf3115d6a6576e4623231658668254c3633666ef3660b206cf2f5587d7780",
+      "path": "tests/test_input_limits.py"
+    },
+    {
+      "sha256": "0a674fb62d9882b1f4d8efd2cd13b6d9fedb02387f9880c17c8ee7cf5ae66ae8",
+      "path": "tests/test_rebuild_interface.py"
+    },
+    {
+      "sha256": "b4dae9ab62695c5f7199982ddac461c153ca1267290eacafb43b7c721306a7c6",
+      "path": "tests/test_review.py"
+    },
+    {
+      "sha256": "ecedd0d5c9208a193cea960d43f084b49acd0a0dcd20e709cb2c755675769fd3",
+      "path": "tools/smoke.py"
+    },
+    {
+      "sha256": "3b827c0f0d6ce5d53a733c1c0031f7c6ee9b92ee1d84e688fb9e30b3eddf9c14",
+      "path": "tools/test_ui.mjs"
+    },
+    {
+      "sha256": "7a69da2c87b8670c5f68cdec85fa2ce7a58e0b7700b5e681f151d53f826fbd6e",
+      "path": "tools/ui-test-dom.mjs"
+    }
+  ],
+  "source_stable_during_checks": true,
+  "source_bundle_sha256": "9ced2c71b5d431b15521845736f2fde0fd345fb2e581afafb53339d47b14ed2e",
+  "release_gates_not_claimed": [
+    "interactive browser review",
+    "dependency/secret audit",
+    "remote CI",
+    "GitHub publication",
+    "independent container backend-file hash inspection"
+  ],
+  "review_history": [
+    {
+      "reviewed_at_utc": "2026-10-16T22:31:03.949701+00:00",
+      "status": "ACCEPT_LOCAL_SCOPE",
+      "issues": [],
+      "checks": [
+        {
+          "name": "independent-pytest",
+          "exit_code": 0,
+          "evidence": "evidence/improvements-0.3/independent-pytest.txt"
+        },
+        {
+          "name": "independent-frontend",
+          "exit_code": 0,
+          "evidence": "evidence/improvements-0.3/independent-frontend.txt"
+        },
+        {
+          "name": "independent-bandit",
+          "exit_code": 0,
+          "evidence": "evidence/improvements-0.3/independent-bandit.txt"
+        }
+      ],
+      "source_bundle_sha256": "587e31f16c7ffb749376d0bc27cab52dbf0fc3613e87b839c6851fcc401ab77f"
+    }
+  ],
+  "runtime_review": {
+    "status": "PASS",
+    "evidence": "evidence/improvements-0.3/independent-http.json"
+  },
+  "source_hashes_encoding": "Ordered records with sha256 before path; all per-file hashes unchanged. source_bundle_sha256 remains the SHA256 of canonical JSON path-to-hash mapping with sorted keys used at review time."
+}

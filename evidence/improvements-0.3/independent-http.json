@@ -1,0 +1,54 @@
+{
+  "application": "agentshield",
+  "reviewed_at_utc": "2026-10-17T02:36:40.019476+00:00",
+  "base_url": "http://127.0.0.1:18201",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "expected_source_sha256": "f2712d8bb0736041067b662cb7f6d0928d9b065ffd0d82e0650fa74c3a4c67a9",
+      "served_sha256": "f2712d8bb0736041067b662cb7f6d0928d9b065ffd0d82e0650fa74c3a4c67a9",
+      "matches": true
+    },
+    {
+      "path": "/guide",
+      "status": 200,
+      "expected_source_sha256": "43147456e463aaf0686db039864c3686eabddd6e1c8110801f7a7756e03b2b3e",
+      "served_sha256": "43147456e463aaf0686db039864c3686eabddd6e1c8110801f7a7756e03b2b3e",
+      "matches": true
+    },
+    {
+      "path": "/assets/ui.mjs",
+      "status": 200,
+      "expected_source_sha256": "e964a0175c44a000a13d22c6f1af727a19f4537acd50aa70249678c7836fdfd7",
+      "served_sha256": "e964a0175c44a000a13d22c6f1af727a19f4537acd50aa70249678c7836fdfd7",
+      "matches": true
+    },
+    {
+      "path": "/assets/common.mjs",
+      "status": 200,
+      "expected_source_sha256": "6410a7d942d231f320cf67bad5b575793d40db2c025d66d01a6eb4f5effef3a9",
+      "served_sha256": "6410a7d942d231f320cf67bad5b575793d40db2c025d66d01a6eb4f5effef3a9",
+      "matches": true
+    },
+    {
+      "path": "/assets/style.css",
+      "status": 200,
+      "expected_source_sha256": "31edaeb85459bc32652a37b11a7f5c5f716f16915fde7fe607f1ac9e3b7367c3",
+      "served_sha256": "31edaeb85459bc32652a37b11a7f5c5f716f16915fde7fe607f1ac9e3b7367c3",
+      "matches": true
+    }
+  ],
+  "source_match_scope": "Exact bytes for served index, guide and ui/common/style assets; API version and functional new-feature behavior. This does not expose or independently hash container backend Python files.",
+  "feature_probe": {
+    "probe": "capped-score comparison retains introduced/resolved changes",
+    "risk_delta": 0,
+    "introduced": [
+      "destructive_command"
+    ],
+    "resolved": [
+      "instruction_override"
+    ]
+  },
+  "status": "PASS"
+}

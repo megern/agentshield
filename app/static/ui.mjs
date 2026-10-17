@@ -13,6 +13,8 @@ import {
   setupDownloads
 } from "./common.mjs";
 let revision = 0;
+let baseline = null,
+  baselineSource = null;
 let report = null,
   source = "manual input";
 const known = [
@@ -64,13 +66,14 @@ function input() {
 function invalidate() {
   revision++;
   report = null;
+  clear($("comparison-results"));
   clear($("results"));
   $("results").append(
     el("p", "Configuration changed. Run the scan to refresh findings.")
   );
   $("preview").textContent = JSON.stringify(input(), null, 2);
 }
-function load(v) {
+function validateConfig(v) {
   if (!v || typeof v !== "object" || Array.isArray(v))
     throw Error("Expected a configuration JSON object.");
   const fields = [
@@ -101,6 +104,9 @@ function load(v) {
   for (const k of ["confirmation_required", "sandboxed", "secrets_in_context"])
     if (v[k] !== undefined && typeof v[k] !== "boolean")
       throw Error(k + " must be true or false.");
+}
+function load(v) {
+  validateConfig(v);
   $("prompt").value = v.prompt || "";
   document
     .querySelectorAll(".tool")
@@ -226,3 +232,85 @@ $("run").onclick = async () => {
 };
 setupDownloads(input, () => report, "agentshield");
 $("preview").textContent = JSON.stringify(input(), null, 2);
+
+function showBaseline() {
+  $("baseline-summary").textContent = baseline
+    ? `Baseline selected (${baselineSource}). ${baseline.tools?.length || 0} tool entries; comparison uses rule codes, not evidence identity.`
+    : "No baseline selected.";
+}
+$("pin-baseline").onclick = () => {
+  baseline = input();
+  baselineSource = source;
+  invalidate();
+  showBaseline();
+  status("Baseline pinned. Edit the current setup, then compare.");
+};
+$("baseline-import").onchange = async (event) => {
+  invalidate();
+  const importRevision = revision;
+  try {
+    const text = await readFile(event.target.files[0]);
+    if (revision !== importRevision) return;
+    const imported = JSON.parse(text);
+    const value = imported.input || imported;
+    validateConfig(value);
+    baseline = value;
+    baselineSource = "imported baseline; provenance unverified";
+    showBaseline();
+    status("Baseline imported. Current setup was not replaced.");
+  } catch (error) {
+    if (revision === importRevision) status(error.message, true);
+  }
+};
+$("compare").onclick = async () => {
+  invalidate();
+  const requestRevision = revision;
+  $("compare").disabled = true;
+  try {
+    if (!baseline) throw Error("Pin or import a baseline before comparing.");
+    const request = { before: baseline, after: input() };
+    const result = await analyze(request, "/compare");
+    if (revision !== requestRevision) return;
+    report = {
+      input: request,
+      source,
+      baseline_source: baselineSource,
+      result
+    };
+    const root = $("comparison-results");
+    const metrics = el("div", undefined, "metrics");
+    metric(metrics, "Before score", result.before.risk_score);
+    metric(metrics, "After score", result.after.risk_score);
+    metric(metrics, "Risk delta (after − before)", result.risk_delta);
+    root.append(metrics);
+    for (const [name, findings] of [
+      ["Introduced", result.introduced],
+      ["Resolved", result.resolved],
+      ["Persistent", result.persistent]
+    ]) {
+      root.append(el("h3", `${name} (${findings.length})`));
+      table(
+        root,
+        ["Rule code", "Evidence before", "Evidence after"],
+        findings.map((finding) => [
+          finding.code,
+          JSON.stringify(
+            name === "Introduced" ? null : (finding.before || finding).evidence
+          ),
+          JSON.stringify(
+            name === "Resolved" ? null : (finding.after || finding).evidence
+          )
+        ])
+      );
+    }
+    limitations(root, result.limitations);
+    render(result.after);
+    status(
+      "Comparison finished. Export scan report includes both configurations and the rule changes."
+    );
+  } catch (error) {
+    if (revision === requestRevision) status(error.message, true);
+  } finally {
+    $("compare").disabled = false;
+  }
+};
