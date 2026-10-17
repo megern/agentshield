@@ -101,3 +101,36 @@ def analyze(req: ScanRequest):
             "Configuration is self-reported; tools are not executed or inspected.",
         ],
     }
+
+
+class ComparisonRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    before: ScanRequest
+    after: ScanRequest
+
+
+def compare(req: ComparisonRequest):
+    before = analyze(req.before)
+    after = analyze(req.after)
+    previous = {finding["code"]: finding for finding in before["findings"]}
+    current = {finding["code"]: finding for finding in after["findings"]}
+    return {
+        "before": before,
+        "after": after,
+        "risk_delta": after["risk_score"] - before["risk_score"],
+        "introduced": [
+            current[code] for code in sorted(current.keys() - previous.keys())
+        ],
+        "resolved": [
+            previous[code] for code in sorted(previous.keys() - current.keys())
+        ],
+        "persistent": [
+            {"code": code, "before": previous[code], "after": current[code]}
+            for code in sorted(previous.keys() & current.keys())
+        ],
+        "limitations": [
+            "Changes are matched by rule code, not by incident identity or evidence equivalence.",
+            "Risk delta uses capped heuristic scores; zero delta can hide changed findings.",
+            "Resolved findings and lower scores do not establish agent safety or verify enforcement.",
+        ],
+    }

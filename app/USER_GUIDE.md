@@ -1,4 +1,4 @@
-# AgentShield user guide — 0.2.0
+# AgentShield user guide — 0.3.0
 
 AgentShield reviews an agent configuration and pasted instructions using eight explainable rules. It shows matched evidence, risk weights and specific remediation suggestions so an engineer can identify permission gaps before enabling tools. It does not execute the agent or enforce permissions.
 
@@ -59,6 +59,14 @@ python -m bandit -q -r app
 python -m pip_audit -r requirements.txt
 ```
 
-Node 22 is used for browser-independent CSV/export logic tests; it is not needed to serve the application. Python tests include actual core calculations, validation failures and in-process HTTP integration. They do not establish Docker deployment or browser interaction success. Rebuild evidence belongs in `evidence/rebuild/`; earlier evidence is historical and does not validate this version. CI includes locked dependency installation, test/security gates, image scanning and secret scanning. Branch protection and release publication remain separate operator actions; no publication success is claimed by this README.
+Node 22 is used for browser-independent CSV/export logic tests; it is not needed to serve the application. Python tests include actual core calculations, validation failures and in-process HTTP integration. They do not establish Docker deployment or browser interaction success. Fresh 0.3.0 evidence belongs in `evidence/improvements-0.3/`. `evidence/rebuild/` records the earlier 0.2.0 rebuild; it does not validate this version. CI includes locked dependency installation, test/security gates, image scanning and secret scanning. Branch protection and release publication remain separate operator actions; no publication success is claimed by this README.
 
 MIT licensed. No paid service or new model download is required. Data is processed by this app server when you run an analysis. Inputs/results are not automatically saved by this application. JSON exports may contain the original input and sensitive values; inspect them before sharing. There is no authentication or rate limiter. Keep the localhost binding or supply access controls before exposing the server.
+
+## Compare a configuration change (0.3.0)
+
+Use **Use current setup as baseline**, then edit the active configuration and select **Compare current setup to baseline**. Alternatively import a baseline from an exported configuration JSON or a single-scan report's `input` object. Baseline import does not replace the active form. Exporting the comparison report includes both original configurations, their scores, and the complete rule-level differences.
+
+The API is `POST /compare` with `{ "before": { ...configuration... }, "after": { ...configuration... } }`. The original `POST /analyze` remains available. `introduced` and `resolved` contain findings whose rule code exists only after/before respectively. `persistent` contains both versions of each finding with the same code, so evidence can change without the finding being considered resolved. Risk delta is **after minus before** using the existing capped score. Two capped scores can produce zero delta despite changed findings. This is a heuristic change review, not an enforcement test or proof of safety. Prompt and list bounds apply independently to both configurations, with the existing 2 MiB HTTP bound.
+
+The baseline remains selected until replaced. Input/baseline changes invalidate the current comparison report. Stale file reads and delayed analysis responses cannot replace a newer setup. An imported comparison report itself is not a baseline configuration; use its `input.before` or `input.after` as a standalone configuration file.

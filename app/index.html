@@ -8,7 +8,7 @@
   </head>
   <body>
     <header>
-      <small>Security configuration review · v0.2.0</small>
+      <small>Security configuration review · v0.3.0</small>
       <h1>AgentShield</h1>
       <p>
         Review agent permissions and untrusted instructions before enabling
@@ -93,6 +93,25 @@
           <div id="results" class="empty">
             Configure the agent, then run the scan.
           </div>
+        </section>
+        <section class="panel wide">
+          <h2>Before / after comparison</h2>
+          <p class="hint">
+            Pin a baseline, edit the current setup, then compare rule findings.
+            Lower scores are not proof of safety.
+          </p>
+          <div class="actions">
+            <button id="pin-baseline">Use current setup as baseline</button
+            ><button id="compare">Compare current setup to baseline</button>
+          </div>
+          <label
+            >Import an exported baseline configuration JSON<input
+              type="file"
+              id="baseline-import"
+              accept=".json,application/json"
+          /></label>
+          <p id="baseline-summary">No baseline selected.</p>
+          <div id="comparison-results"></div>
         </section>
         <section class="panel wide">
           <h2>Import and export</h2>
