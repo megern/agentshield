@@ -8,7 +8,7 @@
   </head>
   <body>
     <header>
-      <small>Security configuration review · v0.3.0</small>
+      <small>Security configuration review · v0.4.0</small>
       <h1>AgentShield</h1>
       <p>
         Review agent permissions and untrusted instructions before enabling
@@ -114,6 +114,48 @@
           <div id="comparison-results"></div>
         </section>
         <section class="panel wide">
+          <h2>Audit a supplied execution trace</h2>
+          <p class="hint">
+            Check recorded tool calls against an explicit policy. No tool is
+            executed. An approval must appear before its exact, unique call ID.
+          </p>
+          <div class="two">
+            <label
+              >Allowed tools (comma-separated)<input
+                id="trace-tools"
+                value="http, shell" /></label
+            ><label
+              >Allowed exact domains (comma-separated)<input
+                id="trace-domains"
+                value="example.org"
+            /></label>
+          </div>
+          <label class="check"
+            ><input type="checkbox" id="trace-confirmation" checked />Require
+            prior approval for every tool call</label
+          >
+          <label
+            >Events JSON array<textarea
+              id="trace-events"
+              placeholder='[{"event_id":"e1","action":"approve","call_id":"call-1"},{"event_id":"e2","action":"call","call_id":"call-1","tool":"http","url":"https://example.org/"}]'
+            ></textarea>
+          </label>
+          <label
+            >Import trace and policy JSON<input
+              type="file"
+              id="trace-import"
+              accept=".json,application/json"
+          /></label>
+          <div class="actions">
+            <button id="trace-sample">Load synthetic trace</button
+            ><button id="run-trace" class="primary">
+              Audit supplied events</button
+            ><button id="export-trace-input">Export trace setup</button
+            ><button id="export-trace-report">Export trace report</button>
+          </div>
+          <div id="trace-results"></div>
+        </section>
+        <section class="panel wide">
           <h2>Import and export</h2>
           <label
             >Import AgentShield configuration JSON<input
@@ -141,6 +183,7 @@
         evidence.
       </footer>
     </main>
+    <script src="/assets/access.js"></script>
     <script type="module" src="/assets/ui.mjs"></script>
   </body>
 </html>

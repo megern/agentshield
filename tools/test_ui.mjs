@@ -296,7 +296,7 @@ test("Comparison UI sends pinned before/current after and exports versioned diff
     try {
       document.getElementById("export-report").onclick();
       const report = JSON.parse(await blob.text());
-      assert.equal(report.version, "0.3.0");
+      assert.equal(report.version, "0.4.0");
       assert.equal(report.input.before.prompt, "");
       assert.equal(report.result.risk_delta, 25);
     } finally {
@@ -330,5 +330,77 @@ test("Baseline import cannot overwrite a newer pinned baseline", async () => {
     summary
   );
   assert.equal(document.getElementById("status").textContent, status);
+  delete globalThis.document;
+});
+
+test("Trace UI sends explicit policy and scoped events, then renders violations", async () => {
+  const { readFile: local } = await import("node:fs/promises");
+  const { documentFromHTML } = await import("./ui-test-dom.mjs");
+  globalThis.document = documentFromHTML(
+    await local(new URL("../app/index.html", import.meta.url), "utf8")
+  );
+  await import("../app/static/ui.mjs?feature=trace04");
+  document.getElementById("trace-sample").onclick();
+  const original = globalThis.fetch;
+  globalThis.fetch = async (path, options) => {
+    assert.equal(path, "/trace/audit");
+    const request = JSON.parse(options.body);
+    assert.deepEqual(request.policy.allowed_domains, ["example.org"]);
+    assert.equal(request.events[0].call_id, request.events[1].call_id);
+    assert.notEqual(request.events[2].call_id, request.events[0].call_id);
+    return {
+      ok: true,
+      json: async () => ({
+        call_count: 2,
+        calls_with_violations: 1,
+        violation_count: 2,
+        passed: false,
+        calls: [
+          {
+            call_id: "call-2",
+            tool: "http",
+            prior_approval: false,
+            host: "other.example",
+            violation_codes: ["MISSING_PRIOR_APPROVAL", "DOMAIN_NOT_ALLOWED"]
+          }
+        ],
+        limitations: ["Supplied evidence only."]
+      })
+    };
+  };
+  try {
+    await document.getElementById("run-trace").onclick();
+    const text = document.getElementById("trace-results").textContent;
+    assert.match(text, /MISSING_PRIOR_APPROVAL/);
+    assert.match(text, /DOMAIN_NOT_ALLOWED/);
+    assert.match(text, /Supplied evidence only/);
+  } finally {
+    globalThis.fetch = original;
+    delete globalThis.document;
+  }
+});
+
+test("Late trace import cannot overwrite a newer trace policy edit", async () => {
+  const { readFile: local } = await import("node:fs/promises");
+  const { documentFromHTML, deferred } = await import("./ui-test-dom.mjs");
+  globalThis.document = documentFromHTML(
+    await local(new URL("../app/index.html", import.meta.url), "utf8")
+  );
+  await import("../app/static/ui.mjs?feature=trace-import04");
+  const read = deferred();
+  const pending = document
+    .getElementById("trace-import")
+    .onchange({ target: { files: [{ size: 100, text: () => read.promise }] } });
+  const policy = document.getElementById("trace-tools");
+  policy.value = "shell";
+  policy.dispatch("input");
+  read.resolve(
+    await local(
+      new URL("../examples/synthetic-trace.json", import.meta.url),
+      "utf8"
+    )
+  );
+  await pending;
+  assert.equal(policy.value, "shell");
   delete globalThis.document;
 });

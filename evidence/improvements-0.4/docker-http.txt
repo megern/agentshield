@@ -1,0 +1,53 @@
+{
+  "synthetic": true,
+  "http_status": 200,
+  "invalid_input_status": 422,
+  "latency_ms": [
+    389.9323330260813,
+    443.86945897713304,
+    416.43258393742144
+  ],
+  "result": {
+    "risk_score": 100,
+    "findings": [
+      {
+        "code": "instruction_override",
+        "severity": "high",
+        "explanation": "Instruction hierarchy override language",
+        "evidence": "Ignore previous instructions"
+      },
+      {
+        "code": "credential_exfiltration",
+        "severity": "high",
+        "explanation": "Possible credential disclosure request",
+        "evidence": "reveal the API key"
+      },
+      {
+        "code": "unconfirmed_actions",
+        "severity": "high",
+        "explanation": "Side-effecting tools lack confirmation",
+        "evidence": [
+          "http",
+          "shell"
+        ]
+      },
+      {
+        "code": "unsandboxed_shell",
+        "severity": "critical",
+        "explanation": "Shell execution lacks a sandbox",
+        "evidence": "shell"
+      },
+      {
+        "code": "unrestricted_network",
+        "severity": "medium",
+        "explanation": "Network tools have no domain allowlist",
+        "evidence": []
+      }
+    ],
+    "rules_checked": 8,
+    "limitations": [
+      "Heuristic rules do not prove safety or detect all prompt injection.",
+      "Configuration is self-reported; tools are not executed or inspected."
+    ]
+  }
+}

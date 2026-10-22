@@ -1,0 +1,33 @@
+{
+  "policy": {
+    "allowed_tools": [
+      "http",
+      "shell"
+    ],
+    "allowed_domains": [
+      "example.org"
+    ],
+    "confirmation_required": true
+  },
+  "events": [
+    {
+      "event_id": "e1",
+      "action": "approve",
+      "call_id": "call-1"
+    },
+    {
+      "event_id": "e2",
+      "action": "call",
+      "call_id": "call-1",
+      "tool": "http",
+      "url": "https://example.org/synthetic"
+    },
+    {
+      "event_id": "e3",
+      "action": "call",
+      "call_id": "call-2",
+      "tool": "http",
+      "url": "https://other.example/synthetic"
+    }
+  ]
+}

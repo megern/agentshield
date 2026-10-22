@@ -1,0 +1,115 @@
+{
+  "at_utc": "2026-10-22T17:54:12.981229+00:00",
+  "base_url": "http://127.0.0.1:18401",
+  "source_match_scope": "Exact served index, guide, every static asset, OpenAPI version and functional feature requests. Does not hash private container backend files.",
+  "checks": [
+    {
+      "path": "/",
+      "matches_current_source": true,
+      "sha256": "ae235d461d4190e303b1e0954e5c215d809b665ac9b35f3ae9d21e93571c02e4"
+    },
+    {
+      "path": "/guide",
+      "matches_current_source": true,
+      "sha256": "360c118558ccf1817719690fc588653b0057c23656205d1552db13ccdc202e0f"
+    },
+    {
+      "path": "/assets/access.js",
+      "matches_current_source": true,
+      "sha256": "f7a4a09a26b83052edc956cf886195c0f4687b0661a166320f460f3e3ccad0d5"
+    },
+    {
+      "path": "/assets/common.mjs",
+      "matches_current_source": true,
+      "sha256": "29e972fbfca1660ede9ac6681e6a978446fbdec6b1956d77eeda45797c774865"
+    },
+    {
+      "path": "/assets/style.css",
+      "matches_current_source": true,
+      "sha256": "31edaeb85459bc32652a37b11a7f5c5f716f16915fde7fe607f1ac9e3b7367c3"
+    },
+    {
+      "path": "/assets/ui.mjs",
+      "matches_current_source": true,
+      "sha256": "1662e224d7417567745f0f29f8dcc61ce9cb5a60d2e1c440c50c8627b9722958"
+    }
+  ],
+  "feature": {
+    "probe": "exact-call scoped prior approval and IDNA host match",
+    "response": {
+      "event_count": 3,
+      "call_count": 2,
+      "approval_count": 1,
+      "calls_with_violations": 1,
+      "calls_without_violations": 1,
+      "passed": false,
+      "violation_count": 1,
+      "violations": [
+        {
+          "code": "MISSING_PRIOR_APPROVAL",
+          "event_index": 2,
+          "event_id": "c",
+          "call_id": "two",
+          "tool": "http",
+          "host": "xn--bcher-kva.example"
+        }
+      ],
+      "calls": [
+        {
+          "call_id": "one",
+          "event_index": 1,
+          "tool": "http",
+          "prior_approval": true,
+          "host": "xn--bcher-kva.example",
+          "violation_codes": []
+        },
+        {
+          "call_id": "two",
+          "event_index": 2,
+          "tool": "http",
+          "prior_approval": false,
+          "host": "xn--bcher-kva.example",
+          "violation_codes": [
+            "MISSING_PRIOR_APPROVAL"
+          ]
+        }
+      ],
+      "limitations": [
+        "This audits supplied trace statements only; no tool is executed and approvals/enforcement are not independently verified.",
+        "Approvals authorize only the exact call ID and must precede its one call. Later approvals do not retroactively authorize calls.",
+        "Domains are exact normalized hosts: no implicit subdomains, redirects, DNS resolution or wildcard matching. Ports are not restricted by this policy.",
+        "Tool names are case-sensitive. http/browser calls require a target URL; any other tool with a URL is also checked against the host allowlist.",
+        "Custom tool network behavior cannot be inferred: supply its URL to audit the host; only http/browser require a URL automatically.",
+        "A passing trace is not a security certification or evidence that omitted actions did not occur."
+      ]
+    }
+  },
+  "status": "PASS",
+  "backend_freshness": {
+    "status": "PASS",
+    "root_proof_path": "outputs/evidence/improvements-0.4/runtime-source.json",
+    "root_proof_sha256": "e5392418dda519a74650eb84e06dd5fca9114b5cfb7b5ed4a8f1b719ba91d3b8",
+    "container": "c1dae0ac367f2ed705e08e5cab0bc5ec7df095ba93dec04ad1a2de35b9e362a0",
+    "application_files_verified": 12,
+    "complete_app_tree_matches": true,
+    "image_id": "sha256:dbae0307767c6bb79aaedf3218c54d083cdd79864c6865e02cfa5ffda4942d06",
+    "native_health": "healthy",
+    "root_docker_validated_at_utc": "2026-10-22T17:28:36.651026+00:00",
+    "independently_verified_at_utc": "2026-10-22T17:54:17.195978+00:00",
+    "attribution": "Root collected private container bytes and native Docker-health evidence. Independent reviewer compared the full app mapping against current files, matched container/image identity and checked fresh actual HTTP/public bytes; private bytes were not collected by this reviewer."
+  },
+  "root_backend_source_proof": {
+    "status": "PASS",
+    "root_proof_path": "outputs/evidence/improvements-0.4/runtime-source.json",
+    "root_proof_sha256": "e5392418dda519a74650eb84e06dd5fca9114b5cfb7b5ed4a8f1b719ba91d3b8",
+    "container": "c1dae0ac367f2ed705e08e5cab0bc5ec7df095ba93dec04ad1a2de35b9e362a0",
+    "application_files_verified": 12,
+    "complete_app_tree_matches": true,
+    "image_id": "sha256:dbae0307767c6bb79aaedf3218c54d083cdd79864c6865e02cfa5ffda4942d06",
+    "native_health": "healthy",
+    "root_docker_validated_at_utc": "2026-10-22T17:28:36.651026+00:00",
+    "independently_verified_at_utc": "2026-10-22T17:54:17.195978+00:00",
+    "attribution": "Root collected private container bytes and native Docker-health evidence. Independent reviewer compared the full app mapping against current files, matched container/image identity and checked fresh actual HTTP/public bytes; private bytes were not collected by this reviewer."
+  },
+  "served_bytes_match_current_source": true
+}
