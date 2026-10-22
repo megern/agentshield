@@ -314,3 +314,175 @@ $("compare").onclick = async () => {
     $("compare").disabled = false;
   }
 };
+
+let traceReport = null,
+  traceSource = "user input; provenance unverified";
+function invalidateTrace() {
+  revision++;
+  traceReport = null;
+  clear($("trace-results"));
+}
+function traceInput() {
+  const events = JSON.parse($("trace-events").value || "[]");
+  if (!Array.isArray(events) || !events.length || events.length > 500)
+    throw Error(
+      "Trace needs 1–500 events. Import the documented event format."
+    );
+  return {
+    policy: {
+      allowed_tools: $("trace-tools")
+        .value.split(",")
+        .map((x) => x.trim())
+        .filter(Boolean),
+      allowed_domains: $("trace-domains")
+        .value.split(",")
+        .map((x) => x.trim())
+        .filter(Boolean),
+      confirmation_required: $("trace-confirmation").checked
+    },
+    events
+  };
+}
+function loadTrace(value) {
+  if (
+    !value ||
+    !value.policy ||
+    !Array.isArray(value.events) ||
+    !Array.isArray(value.policy.allowed_tools) ||
+    !Array.isArray(value.policy.allowed_domains)
+  )
+    throw Error(
+      "Import an object with policy.allowed_tools, policy.allowed_domains and events arrays."
+    );
+  $("trace-tools").value = value.policy.allowed_tools.join(", ");
+  $("trace-domains").value = value.policy.allowed_domains.join(", ");
+  $("trace-confirmation").checked = value.policy.confirmation_required ?? true;
+  $("trace-events").value = JSON.stringify(value.events, null, 2);
+  invalidateTrace();
+}
+for (const id of [
+  "trace-tools",
+  "trace-domains",
+  "trace-confirmation",
+  "trace-events"
+])
+  $(id).oninput = () => {
+    invalidateTrace();
+    traceSource = "user-edited trace; provenance unverified";
+  };
+$("trace-sample").onclick = () => {
+  loadTrace({
+    policy: {
+      allowed_tools: ["http", "shell"],
+      allowed_domains: ["example.org"],
+      confirmation_required: true
+    },
+    events: [
+      { event_id: "e1", action: "approve", call_id: "call-1" },
+      {
+        event_id: "e2",
+        action: "call",
+        call_id: "call-1",
+        tool: "http",
+        url: "https://example.org/report"
+      },
+      {
+        event_id: "e3",
+        action: "call",
+        call_id: "call-2",
+        tool: "http",
+        url: "https://other.example/"
+      }
+    ]
+  });
+  traceSource = "synthetic example";
+  status(
+    "Synthetic trace loaded: the second call has no matching approval and targets a disallowed host."
+  );
+};
+$("trace-import").onchange = async (event) => {
+  invalidateTrace();
+  const generation = revision;
+  try {
+    const text = await readFile(event.target.files[0]);
+    if (revision !== generation) return;
+    loadTrace(JSON.parse(text));
+    traceSource = "imported trace; provenance unverified";
+    status("Trace imported. Review policy before auditing.");
+  } catch (error) {
+    if (revision === generation) status(error.message, true);
+  }
+};
+$("run-trace").onclick = async () => {
+  invalidateTrace();
+  const generation = revision;
+  $("run-trace").disabled = true;
+  try {
+    const request = traceInput();
+    const result = await analyze(request, "/trace/audit");
+    if (revision !== generation) return;
+    traceReport = {
+      application: "agentshield",
+      version: "0.4.0",
+      generated_at: new Date().toISOString(),
+      source: traceSource,
+      input: request,
+      result
+    };
+    const root = $("trace-results"),
+      metrics = el("div", undefined, "metrics");
+    metric(metrics, "Recorded calls", result.call_count);
+    metric(metrics, "Calls with violations", result.calls_with_violations);
+    metric(metrics, "Rule violations", result.violation_count);
+    root.append(metrics);
+    root.append(
+      el(
+        "p",
+        result.passed
+          ? "No configured policy violations in the supplied trace. This does not prove safety."
+          : "Recorded policy violations found. Inspect exact call IDs below.",
+        "notice"
+      )
+    );
+    table(
+      root,
+      ["Call ID", "Tool", "Prior exact approval", "Host", "Violations"],
+      result.calls.map((call) => [
+        call.call_id,
+        call.tool,
+        call.prior_approval ? "Yes" : "No",
+        call.host,
+        call.violation_codes.join(", ") || "None"
+      ])
+    );
+    limitations(root, result.limitations);
+    resultDetails(root, result);
+    status(
+      "Trace audit finished. Supplied events and approvals are not independently verified."
+    );
+  } catch (error) {
+    if (revision === generation) status(error.message, true);
+  } finally {
+    $("run-trace").disabled = false;
+  }
+};
+$("export-trace-input").onclick = () => {
+  try {
+    download(
+      "agentshield-trace-input.json",
+      JSON.stringify(traceInput(), null, 2)
+    );
+  } catch (error) {
+    status(error.message, true);
+  }
+};
+$("export-trace-report").onclick = () => {
+  if (!traceReport) {
+    status("Audit the current trace before exporting.", true);
+    return;
+  }
+  download(
+    "agentshield-trace-report.json",
+    JSON.stringify(traceReport, null, 2)
+  );
+};

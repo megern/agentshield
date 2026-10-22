@@ -1,10 +1,11 @@
+from .access import AccessControl
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from .core import ScanRequest, ComparisonRequest, analyze, compare
 
-app = FastAPI(title="AgentShield", version="0.3.0")
+app = FastAPI(title="AgentShield", version="0.4.0")
 
 
 @app.get("/health")
@@ -40,3 +41,14 @@ def user_guide():
 @app.post("/compare")
 def compare_configurations(request: ComparisonRequest):
     return compare(request)
+
+
+from .trace import TraceRequest, audit_trace
+
+
+@app.post("/trace/audit")
+def audit_execution_trace(request: TraceRequest):
+    return audit_trace(request)
+
+
+app.add_middleware(AccessControl)
